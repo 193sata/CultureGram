@@ -1,5 +1,6 @@
 package com.example.culturegram
 
+import GetImages
 import android.content.Context
 import android.os.FileObserver
 import android.util.Log
@@ -31,10 +32,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStreamReader
+
 
 class MyFileObserver(
     private val context: Context,
@@ -62,7 +65,7 @@ class Status {
             fileObserver.startWatching()
         }
 
-fileObserver.startWatching()
+        fileObserver.startWatching()
         LaunchedEffect(Unit) {
             if (heritageCsv[0][0].length <= 5) {
                 fileObserver.startWatching()
@@ -81,6 +84,10 @@ fileObserver.startWatching()
 //            fileObserver.stopWatching()
 //        }
 
+
+        // GetImagesクラスのContentメソッドを呼び出して画像のリストを取得
+        val getImages = GetImages()
+        val images = getImages.Content(context)
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -102,7 +109,7 @@ fileObserver.startWatching()
                             Row(modifier = Modifier
                                 .fillMaxSize()
                                 .background(color = Color.Blue.copy(alpha = 0.2f))) {
-                                ListImage(i = i, j = j, context)
+                                ListImage(images,i = i, j = j, context)
                                 ListCheck(i = i)
                             }
                         }
@@ -110,7 +117,7 @@ fileObserver.startWatching()
                             Row(modifier = Modifier
                                 .fillMaxSize()
                                 .background(color = Color.LightGray.copy(alpha = 0.2f))) {
-                                ListImage(i = i, j = j, context)
+                                ListImage(images,i = i, j = j, context)
                                 ListCheck(i = i)
                             }
                         }
@@ -166,15 +173,22 @@ fileObserver.startWatching()
 
     //設計途中
     @Composable
-    fun ListImage(i: List<String>, j: Int, context: Context) {
-        val image: Int
-        if (i[3] == "1") {
-            image = R.drawable.mountain_00003
-        } else {
-            image = R.drawable.sea_ocean_00001
+    fun ListImage(images:List<String> ,i: List<String>, j: Int, context: Context) {
+        val imageInt: Int = R.drawable.white_00008
+        var imageStr = ""
+        var imageCheck = 0
+        println(images)
+        for (str in images){
+            //if (false){
+                if (str[73] == i[0][1]) {
+                    imageStr = str
+                    imageCheck = 1
+                    println("Success.")
+                }
         }
+        if (imageCheck == 0){
         Image(
-            painter = painterResource(id = image),
+            painter = painterResource(id = imageInt),
             contentDescription = null,
             modifier = Modifier
                 .size(50.dp, 60.dp)
@@ -182,6 +196,18 @@ fileObserver.startWatching()
                     accessCsvFile(j = j, context)
                 }
         )
+        }
+        else{
+            Image(
+                painter = rememberImagePainter(data = imageStr),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(50.dp,50.dp)
+                    .clickable {
+                        accessCsvFile(j = j,context)
+                    }
+            )
+        }
     }
 
     private fun saveCsvFileToInternalStorage(
