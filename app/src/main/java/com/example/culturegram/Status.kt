@@ -80,7 +80,6 @@ class Status {
                     val heritage = heritageList[index]
                     val imagePath = "/storage/emulated/0/Android/data/com.example.culturegram/files/Pictures/${heritage.name}-0.jpg"
                     val grayImagePath = "/storage/emulated/0/Android/data/com.example.culturegram/files/Pictures/${heritage.name}_glay.jpg"
-
                     val imageFile = File(imagePath)
                     val grayImageFile = File(grayImagePath)
 
@@ -93,35 +92,22 @@ class Status {
                                 Toast.makeText(context, heritage.name, Toast.LENGTH_SHORT).show()
                             }
                     ) {
-                        when{
-                            imageFile.exists() -> {
-                                val bitmap = loadRotatedBitmap(imageFile)
-                                Image(
-                                    bitmap = bitmap.asImageBitmap(),
-                                    contentDescription = heritage.name,
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop  // 画像を正方形に切り取る
-                                )
-                            }
-                            grayImageFile.exists() -> {
-                                val bitmap = loadRotatedBitmap(grayImageFile)
-                                Image(
-                                    bitmap = bitmap.asImageBitmap(),
-                                    contentDescription = heritage.name,
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop  // 画像を正方形に切り取る
-                                )
-                            }
-                            else -> {
-                                Image(
-                                    painter = painterResource(id = R.drawable.no_image),
-                                    contentDescription = "No Image",
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop  // No-imageも正方形に
-                                )
-                            }
+                        if (imageFile.exists()) {
+                            val bitmap = loadRotatedBitmap(imageFile)
+                            Image(
+                                bitmap = bitmap.asImageBitmap(),
+                                contentDescription = heritage.name,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop  // 画像を正方形に切り取る
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.no_image),
+                                contentDescription = "No Image",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop  // No-imageも正方形に
+                            )
                         }
-
                     }
                 }
             }
