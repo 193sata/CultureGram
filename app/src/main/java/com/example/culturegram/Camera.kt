@@ -242,7 +242,7 @@ class CameraScreen {
                                             selectedCharacter = selectedCharacter,  // 保存にも同じキャラクターを使用
                                             xOffset = 0.8f,  // 右下に配置するため、横幅の80%に
                                             yOffset = 0.8f,  // 縦幅の80%に
-                                            scaleFactor = 0.2f  // キャラクターを少し小さく表示
+                                            //scaleFactor = 0.2f  // キャラクターを少し小さく表示
                                         )
                                     }
                                     onImageCaptured(Uri.fromFile(photoFile))
@@ -272,8 +272,8 @@ class CameraScreen {
         context: Context,
         selectedCharacter: Int,
         xOffset: Float,
-        yOffset: Float,
-        scaleFactor: Float
+        yOffset: Float
+        //scaleFactor: Float
     ) {
         val backgroundBitmap = loadRotatedBitmap(photoFile)  // 画像をEXIFデータに基づいて正しい向きに回転
         val characterBitmap = BitmapFactory.decodeResource(context.resources, selectedCharacter)
@@ -288,12 +288,18 @@ class CameraScreen {
 
         // 背景画像を描画
         canvas.drawBitmap(backgroundBitmap, 0f, 0f, paint)
-
+        println("characterBitmap.width")
+        println(characterBitmap.width)
+        //275fはニャンコのbitmap.widthの0.2倍のサイズ感
+        var scaleFactor: Float = 275f/characterBitmap.width.toFloat()
         // キャラクター画像を指定した位置とスケールで描画
         val scaledCharacterWidth = characterBitmap.width * scaleFactor
         val scaledCharacterHeight = characterBitmap.height * scaleFactor
         val xPosition = (backgroundBitmap.width - scaledCharacterWidth) * xOffset
         val yPosition = (backgroundBitmap.height - scaledCharacterHeight) * yOffset
+        println("scaledsize")
+        println(scaledCharacterWidth)
+        println(scaledCharacterHeight)
         canvas.drawBitmap(
             characterBitmap,
             null,
